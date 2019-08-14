@@ -1,0 +1,19 @@
+{
+  "name": "exam-intermediate",
+  "version": "1.0.0",
+  "description": "exam-intermediate.js",
+  "main": "exam.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yizeruier1/exam-intermediate.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yizeruier1/exam-intermediate.js/issues"
+  },
+  "homepage": "https://github.com/yizeruier1/exam-intermediate.js#readme"
+}
