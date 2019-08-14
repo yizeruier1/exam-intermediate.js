@@ -1,5 +1,8 @@
-import crypto from 'crypto'
-import axios from 'axios'
+// import crypto from 'crypto'
+// import axios from 'axios'
+const crypto = require('crypto')
+const axios = require('axios')
+
 const url = 'https://dm.aliyuncs.com/'
 // 动态配置 必要参数
 const requireParam = [
@@ -10,14 +13,14 @@ const requireParam = [
     'batch--templateName',
     'batch--receiversName'
 ]
-const exam =  (config, cb) => {
+const exam = (config, cb) => {
     if (!config || JSON.stringify(config) === "{}") return cb('config required')
     const nonce = Date.now()
     const date = new Date()
     const errorMsg = []
     // 缺少参数 处理
     if(!config.action){
-        cb('error action', null)
+        cb('error action')
     }else{
         requireParam.forEach(item => {
             if (item.indexOf('--') === -1) {
@@ -76,10 +79,10 @@ const exam =  (config, cb) => {
             // 参数 处理
             let signStr = []
             let reqBody = []
-            for (let i in data) {
+            Object.keys(data).forEach(i => {
                 signStr.push(encodeURIComponent(i) + '=' + encodeURIComponent(data[i]))
                 reqBody.push(i + '=' + data[i])
-            }
+            })
             signStr = 'POST&%2F&' + encodeURIComponent(signStr.sort().join('&'))
             const sign = crypto.createHmac("sha1", config.accessKeySecret + '&').update(signStr).digest('base64')
             const signature = encodeURIComponent(sign)
@@ -92,4 +95,4 @@ const exam =  (config, cb) => {
         cb(err.data, err.config)
     })
 }
-export default exam
+module.exports = exam
