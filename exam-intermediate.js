@@ -1,6 +1,6 @@
 const crypto  = require("crypto");
 const request = require("request");
-const url     = 'https://dm.aliyuncs.com/';
+const url     = "https://dm.aliyuncs.com/";
 
 module.exports = function (config, cb) {
     const nonce           = Date.now();
@@ -8,33 +8,33 @@ module.exports = function (config, cb) {
     const errorMsg = [];
     config = config || {};
     if (!config.accessKeyID) {
-        errorMsg.push('accessKeyID required');
+        errorMsg.push("accessKeyID required");
     }
     if (!config.accessKeySecret) {
-        errorMsg.push('accessKeySecret required');
+        errorMsg.push("accessKeySecret required");
     }
     if(!config.accountName){
-        errorMsg.push('accountName required')
+        errorMsg.push("accountName required");
     }
     var param = {};
-    if(config.action == 'single'){
+    if(config.action == "single"){
         if(!config.toAddress){
-            errorMsg.push('toAddress required')
+            errorMsg.push("toAddress required");
         }
         param = {
             AccessKeyId: config.accessKeyID,
-            Action: 'single',
-            Format: 'JSON',
+            Action: "single",
+            Format: "JSON",
             AccountName:config.accountName,
             ReplyToAddress:!!config.replyToAddress,
-            AddressType:typeof config.addressType === 'undefined' ? 0 : config.addressType,
+            AddressType:typeof config.addressType === "undefined" ? 0 : config.addressType,
             ToAddress:config.toAddress,
-            SignatureMethod: 'HMAC-SHA1',
+            SignatureMethod: "HMAC-SHA1",
             SignatureNonce: nonce,
-            SignatureVersion: '1.0',
+            SignatureVersion: "1.0",
             TemplateCode: config.templateCode,
             Timestamp: date.toISOString(),
-            Version: '2015-11-23'
+            Version: "2015-11-23"
         };
         if(config.fromAlias){
             param.FromAlias = config.fromAlias;
@@ -48,60 +48,60 @@ module.exports = function (config, cb) {
         if(config.textBody){
             param.TextBody = config.textBody;
         }
-    }else if(config.action == 'batch'){
+    }else if(config.action == "batch"){
         if(!config.templateName){
-            errorMsg.push('templateName required')
+            errorMsg.push("templateName required");
         }
         if(!config.receiversName){
-            errorMsg.push('receiversName required')
+            errorMsg.push("receiversName required");
         }
         param = {
             AccessKeyId: config.accessKeyID,
-            Action: 'batch',
-            Format: 'JSON',
+            Action: "batch",
+            Format: "JSON",
             AccountName:config.accountName,
-            AddressType:typeof config.addressType === 'undefined' ? 0 : config.addressType,
+            AddressType:typeof config.addressType === "undefined" ? 0 : config.addressType,
             TemplateName:config.templateName,
             ReceiversName:config.receiversName,
-            SignatureMethod: 'HMAC-SHA1',
+            SignatureMethod: "HMAC-SHA1",
             SignatureNonce: nonce,
-            SignatureVersion: '1.0',
+            SignatureVersion: "1.0",
             TemplateCode: config.templateCode,
             Timestamp: date.toISOString(),
-            Version: '2015-11-23'
+            Version: "2015-11-23"
         };
         if(config.tagName){
             param.TagName = config.tagName;
         }
     }else{
-        cb('error action',null);
+        cb("error action",null);
     }
     if (errorMsg.length) {
-        return cb(errorMsg.join(','));
+        return cb(errorMsg.join(","));
     }
     var signStr = [];
     for (var i in param) {
-        signStr.push(encodeURIComponent(i)+'='+encodeURIComponent(param[i]));
+        signStr.push(encodeURIComponent(i)+"="+encodeURIComponent(param[i]));
     }
-    signStr.sort()
-    signStr = signStr.join('&');
-    signStr = 'POST&%2F&' + encodeURIComponent(signStr);
-    const sign = crypto.createHmac("sha1", config.accessKeySecret + '&')
+    signStr.sort();
+    signStr = signStr.join("&");
+    signStr = "POST&%2F&" + encodeURIComponent(signStr);
+    const sign = crypto.createHmac("sha1", config.accessKeySecret + "&")
         .update(signStr)
-        .digest('base64');
+        .digest("base64");
     const signature = encodeURIComponent(sign);
-    var reqBody = ['Signature='+signature];
+    var reqBody = ["Signature="+signature];
     for (var i in param) {
-        reqBody.push(i+'='+param[i]);
+        reqBody.push(i+"="+param[i]);
     }
-    reqBody = reqBody.join('&');
+    reqBody = reqBody.join("&");
     request({
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            "Content-Type": "application/x-www-form-urlencoded"
         },
         uri: url,
         body: reqBody,
-        method: 'POST'
+        method: "POST"
     }, function (err, res, body) {
         cb(err, body);
     })
